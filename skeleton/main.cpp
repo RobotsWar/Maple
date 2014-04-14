@@ -4,6 +4,8 @@
 #include <terminal.h>
 #include <main.h>
 
+TERMINAL_PARAMETER_INT(t, "Variable t", 0);
+
 TERMINAL_COMMAND(hello, "Prints hello world")
 {
     terminal_io()->println("Hello world");
@@ -14,6 +16,8 @@ TERMINAL_COMMAND(hello, "Prints hello world")
  */
 void setup()
 {
+    terminal_init(&SerialUSB);
+    t = 123;
 }
 
 /**
@@ -21,4 +25,5 @@ void setup()
  */
 void loop()
 {
+    terminal_tick();
 }
