@@ -1,6 +1,12 @@
 #ifndef DXL_H
 #define DXL_H
 
+#include <cstdlib>
+
+#if !defined(DXL_VERSION_1)
+#define DXL_VERSION_2
+#endif
+
 // Protocol definition
 #define DXL_BROADCAST   0xFE
 
@@ -22,6 +28,7 @@
 #endif
 
 // Registers
+#ifdef DXL_VERSION_1
 #define DXL_ID              0x03
 #define DXL_RETURN_DELAY    0x05
 #define DXL_RETURN_LEVEL    0x10
@@ -30,6 +37,7 @@
 #define DXL_COMPLIANCE_CW   0x1C
 #define DXL_COMPLIANCE_CCW  0x1D
 #define DXL_LED             0x19
+
 #define DXL_GOAL_POSITION   0x1E
 #define DXL_GOAL_SPEED      0x20
 #define DXL_GOAL_TORQUE     0x22
@@ -38,11 +46,33 @@
 #define DXL_TORQUE          0x28
 #define DXL_VOLTAGE         0x2a
 #define DXL_TEMPERATURE     0x2b
+#endif
+
+#ifdef DXL_VERSION_2
+#define DXL_ID              0x03
+#define DXL_RETURN_DELAY    0x05
+#define DXL_RETURN_LEVEL    0x11
+#define DXL_COMPLIANCE_MARGIN_CW 0x1A
+#define DXL_COMPLIANCE_MARGIN_CCW 0x1B
+#define DXL_COMPLIANCE_CW   0x1C
+#define DXL_COMPLIANCE_CCW  0x1D
+
+#define DXL_LED             0x19
+#define DXL_GOAL_POSITION   0x1E
+#define DXL_GOAL_SPEED      0x20
+#define DXL_GOAL_TORQUE     0x23
+#define DXL_POSITION        0x25
+#define DXL_SPEED           0x27
+#define DXL_TORQUE          0x29
+#define DXL_VOLTAGE         0x2d
+#define DXL_TEMPERATURE     0x2e
+#endif
 
 // Instructions
 #define DXL_CMD_PING    0x01
 #define DXL_CMD_READ    0x02
 #define DXL_CMD_WRITE   0x03
+#define DXL_CMD_SYNC_WRITE      0x83
 
 // Dynamixel max id
 #define DXL_MAX_ID 20
@@ -61,7 +91,8 @@ struct dxl_packet {
     ui8 parameter_nb;
     ui8 parameters[DXL_MAX_PARAMS];
     bool process;
-    ui8 dxl_state;
+    int dxl_state;
+    int crc16;
 };
 
 struct dxl_config {
@@ -69,6 +100,8 @@ struct dxl_config {
     float zero;
     float min;
     float max;
+    int position;
+    bool dirty;
 };
 
 void dxl_packet_init(struct dxl_packet *packet);
@@ -113,9 +146,13 @@ int dxl_read_word(ui8 id, ui8 addr, bool *success = NULL);
 
 // Position
 float dxl_get_position(ui8 id, bool *success = NULL);
+float dxl_get_target_position(ui8 id);
 void dxl_set_position(ui8 id, float position);
 int dxl_position_to_value(ui8 id, float position);
 float dxl_value_to_position(ui8 id, int value);
+
+void dxl_async(bool async);
+void dxl_flush();
 
 // Torque
 void dxl_disable(ui8 id);
