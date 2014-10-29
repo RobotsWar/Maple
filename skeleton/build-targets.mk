@@ -4,8 +4,6 @@
 SRC_FILES = main.cpp
 OBJ_FILES = $(addprefix $(BUILD_PATH)/,$(SRC_FILES:.cpp=.o))
 
-# Uncomment to disable robot campus commands
-
 $(BUILD_PATH)/%.o: %.cpp
 	$(SILENT_CXX) $(CXX) $(CFLAGS) $(CXXFLAGS) $(LIBMAPLE_INCLUDES) $(WIRISH_INCLUDES) -o $@ -c $< 
 
