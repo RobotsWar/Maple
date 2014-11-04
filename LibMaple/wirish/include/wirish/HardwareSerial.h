@@ -73,6 +73,8 @@ public:
     int txPin(void) { return this->tx_pin; }
     int rxPin(void) { return this->rx_pin; }
 
+    void enableTransmitter(bool enable = true);
+    void enableReceiver(bool enable = true);
     void waitDataToBeSent();
 
     /* Escape hatch into libmaple */
