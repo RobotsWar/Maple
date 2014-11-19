@@ -46,12 +46,22 @@ static void transmitMode()
     delay_us(5);
 }
 
+void goForward(int baud)
+{
+    pinMode(BOARD_LED_PIN, OUTPUT);
+    pinMode(DIRECTION_TTL, OUTPUT);
+    pinMode(DIRECTION_485, OUTPUT);
+    Serial3.begin(baud);
+    receiveMode();
+    started = true;
+}
+
 void setup()
 {
     terminal_init(&SerialUSB);
 
-    Serial3.begin(57600);
-    started = true;
+    goForward(57600);
+//    goForward(1000000);
 }
 
 /**
@@ -62,12 +72,8 @@ TERMINAL_COMMAND(go, "Run the forward")
     int br = atoi(argv[0]);
     terminal_io()->print("Starting @");
     terminal_io()->println(br);
-    pinMode(BOARD_LED_PIN, OUTPUT);
-    pinMode(DIRECTION_TTL, OUTPUT);
-    pinMode(DIRECTION_485, OUTPUT);
-    Serial3.begin(br);
-    receiveMode();
-    started = true;
+
+    goForward(br);
 }
 
 /**
