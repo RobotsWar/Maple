@@ -51,10 +51,17 @@
 #define BOARD_USART3_RX_PIN       0
 
 #define BOARD_NR_SPI              2
+#ifdef SPI1_REMAPPED
+#define BOARD_SPI1_NSS_PIN        20
+#define BOARD_SPI1_MOSI_PIN       17
+#define BOARD_SPI1_MISO_PIN       18
+#define BOARD_SPI1_SCK_PIN        19
+#else
 #define BOARD_SPI1_NSS_PIN        7
 #define BOARD_SPI1_MOSI_PIN       4
 #define BOARD_SPI1_MISO_PIN       5
 #define BOARD_SPI1_SCK_PIN        6
+#endif
 #define BOARD_SPI2_NSS_PIN        31
 #define BOARD_SPI2_MOSI_PIN       28
 #define BOARD_SPI2_MISO_PIN       29
